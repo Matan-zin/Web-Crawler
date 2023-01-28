@@ -3,15 +3,15 @@ class ReadHtml:
 
     def __init__(self, html_data: str):
         
-        self.index = -1
+        self.index: int = -1
         
-        self.length = len( html_data )
+        self.length: int = len( html_data )
 
-        self.html_data = html_data
+        self.html_data: str = html_data
 
 
     
-    def get_next_char(self, val = 1):
+    def get_next_char(self, val = 1) -> chr:
 
         self.index += val
 
@@ -23,7 +23,7 @@ class ReadHtml:
 
 
 
-    def go_to_previous_char(self, step = 1):
+    def go_to_previous_char(self, step = 1) -> None:
 
         self.index -= step
 
@@ -41,12 +41,12 @@ class ReadHtml:
 
 
 
-    def get_data(self):
+    def get_data(self) -> str:
 
         return self.html_data
 
 
 
-    def get_index(self):
+    def get_index(self) -> int:
 
         return self.index
