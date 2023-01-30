@@ -4,7 +4,6 @@ from Element   import Element
 from ReadHtml  import ReadHtml
 from Attribute import Attribute
 
-# -----------------------------------------------------------------------------------------------------------------
 
 def validate_html_element(read: ReadHtml) -> bool:
 
@@ -13,49 +12,37 @@ def validate_html_element(read: ReadHtml) -> bool:
     read.go_to_previous_char()
 
     if char.isalnum():
-
         read.go_to_previous_char()
-
         return True
 
     return False
 
 
-# -----------------------------------------------------------------------------------------------------------------
 
 
 def validate_close_element(read: ReadHtml) -> bool:
-
+    
     char: chr = read.get_next_char()
 
     read.go_to_previous_char()
 
     if char == const.FORWARD_SLASH:
-
         read.skip_until_match(const.CLOSE_TAG)
-
         return True
+
+    if char == const.IGNORE:
+        read.skip_until_match(const.CLOSE_TAG)
     
     return False
 
 
-# -----------------------------------------------------------------------------------------------------------------
 
 
 def ignore(read: ReadHtml) -> None:
 
-    while True:
-
-        char: chr = read.get_next_char()
-
-        match char:
-
-            case const.CLOSE_TAG:
-
-                break
+    read.skip_until_match(const.CLOSE_TAG)
 
 
-# -----------------------------------------------------------------------------------------------------------------
 
 
 def read_attribute_name(read: ReadHtml) -> str:
@@ -63,27 +50,20 @@ def read_attribute_name(read: ReadHtml) -> str:
     name: str = ''
 
     while True:
-
         char: chr = read.get_next_char()
 
         match char:
-
             case None:
-
                 break
 
-
             case const.EQUEL_SIGN:
-
                 break
     
         name += char
 
-
     return name
 
 
-# -----------------------------------------------------------------------------------------------------------------
 
 
 def read_attribute_values(read: ReadHtml) -> list[str]:
@@ -94,55 +74,38 @@ def read_attribute_values(read: ReadHtml) -> list[str]:
     values = []
 
     while True:
-
         char: chr = read.get_next_char()
-
         
         if char == None:
-
             break
-
 
         if char == const.DOUBLE_QUOTE:
-
             if value:
-
                 values.append(value)
-
             break
 
-
         if char == const.WHITE_SPACE:
-
             values.append(value)
-
             value = ''
-
-
         else:
-
             value += char
            
-
     return values
 
 
 
-# -----------------------------------------------------------------------------------------------------------------
 
 
 
 def read_attribute(read: ReadHtml) -> Attribute:
     
     name: str = read_attribute_name(read)
-
     values: list[str] = read_attribute_values(read)
     
     return Attribute(name, values)
 
 
 
-# -----------------------------------------------------------------------------------------------------------------
 
 
 def read_element_attributes(read: ReadHtml):
@@ -150,28 +113,18 @@ def read_element_attributes(read: ReadHtml):
     attributes = []
 
     while True:
-
         char = read.get_next_char()
 
-
         if char == None:
-
             break
-
         
         if char == const.CLOSE_TAG:
-
             read.go_to_previous_char()
-            
             break
 
-        
         if char.isalnum():
-
             read.go_to_previous_char()
-            
             attribute = read_attribute(read)
-            
             attributes.append( attribute )
     
     
@@ -179,7 +132,6 @@ def read_element_attributes(read: ReadHtml):
 
 
 
-# -----------------------------------------------------------------------------------------------------------------
 
 
 
@@ -193,143 +145,99 @@ def read_element_name_and_attributes(read: ReadHtml):
         char = read.get_next_char()
 
         match char:
-
             case const.IGNORE:
-
                 ignore(read)
-
                 break
 
-            
             case const.WHITE_SPACE:
-
                 attributes = read_element_attributes(read)
-
                 break
         
-            
             case const.CLOSE_TAG:
-
                 read.go_to_previous_char()
-
                 break
 
-
             case None:
-
                 break
         
         
         if char.isalnum():
-            
             name += char
-
 
     return { 'name': name, 'attributes': attributes }
 
 
 
-# -----------------------------------------------------------------------------------------------------------------
 
 
-def read_contant(read: ReadHtml, element: Element) -> str:
+def read_content(read: ReadHtml, element: Element) -> str:
 
     value = ''
-    contant = ''
+    content = ''
 
     while True:
-
         char = read.get_next_char()
 
-
         if char == None:
-
             break
 
-
         if char == const.OPEN_TAG:
-
             if validate_close_element(read):
-
                 break
-            
 
             if validate_html_element(read):
-
                 elem = read_element(read)
-
                 element.add_element(elem)
-
                 continue
 
-
-
         if char == const.WHITE_SPACE or char == const.END_LINE:
-            
             if value:
-
-                contant += value + const.WHITE_SPACE
-
+                content += value + const.WHITE_SPACE
                 value = ''
         else:
-
             value += char
 
-
-    return contant or value or ''
-
+    return content or value
 
 
-# -----------------------------------------------------------------------------------------------------------------
+
 
 
 def read_element(read: ReadHtml) -> Element:
 
     result = ''
-    contant = ''
+    content = ''
 
     element = Element()
 
-
     while True:
-
         char = read.get_next_char()
         
         match char:
-            
-            case const.CLOSE_TAG:
-                
-                contant = read_contant(read, element)
-                
-                break
 
             case const.OPEN_TAG:
-
                 result = read_element_name_and_attributes(read)
 
-            case None:
-
+            case const.CLOSE_TAG:
+                content = read_content(read, element)
                 break
 
-
+            case None:
+                break
 
     if result.get('name'): 
-        
         element.set_name(result.get('name'))
 
     if result.get('attributes'): 
-        
         element.add_attributes(result.get('attributes'))
 
-    if contant: 
-        
-        element.add_contant(contant)
+    if content: 
+        element.add_content(content)
 
     
     return element
             
 
-# -----------------------------------------------------------------------------------------------------------------
 
 
 element: Element = None

@@ -2,11 +2,9 @@ class ReadHtml:
 
 
     def __init__(self, html_data: str):
-        
-        self.index: int = -1
-        
-        self.length: int = len( html_data )
 
+        self.index: int = -1
+        self.length: int = len( html_data )
         self.html_data: str = html_data
 
 
@@ -16,7 +14,6 @@ class ReadHtml:
         self.index += val
 
         if( self.index >= self.length ):
-
             return None
 
         return self.html_data[ self.index ]
@@ -34,7 +31,6 @@ class ReadHtml:
         while True:
 
             if self.html_data[self.index] == char:
-
                 return
 
             self.index += 1 

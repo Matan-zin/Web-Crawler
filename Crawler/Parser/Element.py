@@ -6,7 +6,7 @@ class Element:
 
         self.__name: str = ''
 
-        self.__contant: str = ''
+        self.__content: str = ''
 
         self.__elements: list[Element] = []
 
@@ -21,9 +21,9 @@ class Element:
         
 
 
-    def add_contant(self, contant: str) -> None:
+    def add_content(self, content: str) -> None:
 
-        self.__contant = contant
+        self.__content = content
 
 
 
@@ -50,8 +50,8 @@ class Element:
         print('Attributes:')
         for attr in self.__attributes:
             print(attr)
-        print('contant:')
-        print(self.__contant)
+        print('content:')
+        print(self.__content)
         print('Elements:')
         for elem in self.__elements:
             elem.print()
