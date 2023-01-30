@@ -5,11 +5,8 @@ class Element:
     def __init__(self):
 
         self.__name: str = ''
-
         self.__content: str = ''
-
         self.__elements: list[Element] = []
-
         self.__attributes: list[Attribute] = []
 
 
