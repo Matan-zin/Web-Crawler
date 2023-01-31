@@ -15,15 +15,15 @@ def create_connection(address, timeout = None, source_address = None):
 class HttpService:
 
     
-    def __init__(proxy_url, proxy_port):
-        
+    def __init__(self, proxy_url, proxy_port):
+
         socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, proxy_url, proxy_port)
         socket.socket = socks.socksocket
         socket.create_connection = create_connection
     
     
 
-    def get(url):
+    def get(self, url):
 
         req = http.Request(url)
         res = http.urlopen(req)
@@ -31,7 +31,8 @@ class HttpService:
 
 
 
+
 http_service = HttpService('127.0.0.1', 8888)
 
-http_service.get('http://strongerw2ise74v3duebgsvug4mehyhlpa7f6kfwnas7zofs3kov7yd.onion/pbebtdqcz')
+http_service.get('http://strongerw2ise74v3duebgsvug4mehyhlpa7f6kfwnas7zofs3kov7yd.onion')
 

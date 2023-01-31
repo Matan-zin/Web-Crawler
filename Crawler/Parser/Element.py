@@ -11,16 +11,27 @@ class Element:
 
 
 
-
     def set_name(self, name: str) -> None:
 
         self.__name = name
+
+
+
+    def get_name(self) -> str:
+
+        return self.__name
         
 
 
-    def add_content(self, content: str) -> None:
+    def set_content(self, content: str) -> None:
 
         self.__content = content
+
+
+    
+    def get_content(self) -> str:
+
+        return self.__content
 
 
 
@@ -35,10 +46,13 @@ class Element:
         self.__attributes.append( attr )
 
 
-       
-    def add_attributes(self, attributes: list[Attribute]) -> None:
+
+    def set_attributes(self, attributes: list[Attribute]) -> None:
 
         self.__attributes = attributes
+
+
+
 
 
 
@@ -50,5 +64,7 @@ class Element:
         print('content:')
         print(self.__content)
         print('Elements:')
+        print('{')
         for elem in self.__elements:
             elem.print()
+        print('}')
