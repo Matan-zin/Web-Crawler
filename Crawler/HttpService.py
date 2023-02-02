@@ -23,11 +23,12 @@ class HttpService:
     
     
 
-    def get(self, url):
+    def get(self, url) -> str:
 
         req = http.Request(url)
         res = http.urlopen(req)
-        print(str(res.read()))
+        
+        return res.read().decode('utf-8')
 
 
 

@@ -52,6 +52,12 @@ class Element:
         self.__attributes = attributes
 
 
+    
+    def get_attributes(self) -> list[Attribute]:
+
+        return self.__attributes
+
+
 
 
 

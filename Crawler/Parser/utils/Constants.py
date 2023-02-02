@@ -5,4 +5,5 @@ CLOSE_TAG = '>'
 EQUEL_SIGN = '='
 WHITE_SPACE = ' '
 DOUBLE_QUOTE = '"'
+SINGLE_QUOTE = "'"
 FORWARD_SLASH = '/'

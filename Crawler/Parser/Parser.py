@@ -1,266 +1,289 @@
-import Constants as const
+import utils.Constants as const
+import utils.HtmlTagsWithoutClose as htmlTagsWithoutClose
 
 from Element   import Element
 from ReadHtml  import ReadHtml
 from Attribute import Attribute
 
 
+class Parser:
 
 
 
-def is_html_element(read: ReadHtml) -> bool:
 
-    char: chr = read.get_next_char()
+    def __init__(self, read: ReadHtml):
 
-    read.go_to_previous_char()
+        self.read : ReadHtml = read
 
-    if char.isalnum() or char == const.IGNORE:
+
+
+
+
+    def is_html_element(self) -> bool:
+
+        char: chr = self.read.get_next_char()
+
         read.go_to_previous_char()
-        return True
 
-    return False
-
-
-
-
-
-def is_close_element(read: ReadHtml) -> bool:
-    
-    char: chr = read.get_next_char()
-
-    read.go_to_previous_char()
-
-    if char == const.FORWARD_SLASH:
-        read.skip_until_match(const.CLOSE_TAG)
-        return True
-
-    
-    return False
-
-
-
-
-
-def ignore(read: ReadHtml) -> None:
-
-    read.skip_until_match(const.CLOSE_TAG)
-
-
-
-
-
-def read_attribute_name(read: ReadHtml) -> str:
-
-    name: str = ''
-
-    while True:
-
-        char: chr = read.get_next_char()
-
-        if char == None:
-            break
-
-        if char == const.EQUEL_SIGN:
-            break
-    
-        name += char
-
-
-    return name
-
-
-
-
-
-def read_attribute_values(read: ReadHtml) -> list[str]:
-    
-    value = ''
-    values = []
-
-    read.get_next_char()
-
-    while True:
-
-        char: chr = read.get_next_char()
-        
-        if char == None:
-            break
-
-        if char == const.DOUBLE_QUOTE:
-            if value:
-                values.append(value)
-            break
-
-        if char == const.WHITE_SPACE:
-            values.append(value)
-            value = ''
-        else:
-            value += char
-           
-
-    return values
-
-
-
-
-
-def read_attribute(read: ReadHtml) -> Attribute:
-    
-    name: str = read_attribute_name(read)
-    values: list[str] = read_attribute_values(read)
-    
-    return Attribute(name, values)
-
-
-
-
-
-def read_element_attributes(read: ReadHtml) -> list[Attribute]:
-
-    attributes: list[Attribute] = []
-
-    while True:
-
-        char: chr = read.get_next_char()
-
-        if char == None:
-            break
-        
-        if char == const.CLOSE_TAG:
+        if char.isalnum() or char == const.IGNORE:
             read.go_to_previous_char()
-            break
+            return True
 
-        if char.isalnum():
-            read.go_to_previous_char()
-            attribute = read_attribute(read)
-            attributes.append( attribute )
-    
-    
-    return attributes
+        return False
 
 
 
 
 
-def read_element_name_and_attributes(read: ReadHtml) -> object:
-    
-    name = ''
-    attributes = []
-    
-    while True:
+    def is_has_closing_element(self, element_name: str) -> bool:
 
-        char: chr = read.get_next_char()
+        return htmlTagsWithoutClose.is_has_close(element_name)
 
-        if char == const.IGNORE:
-            ignore(read)
-            break
 
-        if char == const.WHITE_SPACE:
-            attributes = read_element_attributes(read)
-            break
-    
-        if char == const.CLOSE_TAG:
-            read.go_to_previous_char()
-            break
 
-        if char == None:
-            break
-        
-        
-        if char.isalnum():
+
+
+    def is_end_of_element(self) -> bool:
+
+        char: chr = self.read.get_next_char()
+
+        read.go_to_previous_char()
+
+        if char == const.FORWARD_SLASH:
+            read.skip_until_match(const.CLOSE_TAG)
+            return True
+
+
+        return False
+
+
+
+
+
+    def ignore(self) -> None:
+
+        self.read.skip_until_match(const.CLOSE_TAG)
+
+
+
+
+
+    def read_attribute_name(self) -> str:
+
+        name: str = ''
+
+        while True:
+
+            char: chr = self.read.get_next_char()
+
+            if char == None:
+                break
+
+            if char == const.EQUEL_SIGN:
+                break
+            
             name += char
 
 
-    return { 'name': name, 'attributes': attributes }
+        return name
 
 
 
 
 
-def read_content(read: ReadHtml, element: Element) -> str:
+    def read_attribute_values(self) -> list[str]:
 
-    term: str = ''
-    content: str = ''
+        value = ''
+        values = []
 
-    while True:
+        self.read.get_next_char()
 
-        char: chr = read.get_next_char()
+        while True:
 
-        if char == None:
-            break
+            char: chr = self.read.get_next_char()
 
-        if char == const.OPEN_TAG:
-            if is_close_element(read):
+            if char == None:
                 break
 
-            if is_html_element(read):
-                elem = read_element(read)
-                element.add_element(elem)
+            if char == const.DOUBLE_QUOTE or char == const.SINGLE_QUOTE:
+                if value:
+                    values.append(value)
+                break
+
+            if char == const.WHITE_SPACE:
+                values.append(value)
+                value = ''
+            else:
+                value += char
+
+
+        return values
+
+
+
+
+
+    def read_attribute(self) -> Attribute:
+
+        name: str = self.read_attribute_name()
+        values: list[str] = self.read_attribute_values()
+
+        return Attribute(name, values)
+
+
+
+
+
+    def read_element_attributes(self) -> list[Attribute]:
+
+        attributes: list[Attribute] = []
+
+        while True:
+
+            char: chr = self.read.get_next_char()
+
+            if char == None:
+                break
+            
+            if char == const.CLOSE_TAG:
+                read.go_to_previous_char()
+                break
+
+            if char.isalnum():
+                self.read.go_to_previous_char()
+                attribute = self.read_attribute()
+                attributes.append( attribute )
+
+
+        return attributes
+
+
+
+
+
+    def read_element_name_and_attributes(self) -> object:
+
+        name = ''
+        attributes = []
+
+        while True:
+
+            char: chr = self.read.get_next_char()
+
+            if char == const.IGNORE:
+                self.ignore()
+                break
+
+            if char == const.WHITE_SPACE:
+                attributes = self.read_element_attributes()
+                break
+            
+            if char == const.CLOSE_TAG:
+                self.read.go_to_previous_char()
+                break
+
+            if char == None:
+                break
+            
+            
+            if char.isalnum():
+                name += char
+
+
+        return { 'name': name, 'attributes': attributes }
+
+
+
+
+
+    def read_content(self, element: Element) -> str:
+
+        term: str = ''
+        content: str = ''
+
+        while True:
+
+            char: chr = self.read.get_next_char()
+
+            if char == None:
+                break
+
+            if char == const.OPEN_TAG:
+                if self.is_end_of_element():
+                    break
+
+                if self.is_html_element():
+                    elem = self.read_element()
+                    element.add_element(elem)
+                    continue
+
+            if char == const.WHITE_SPACE or char == const.END_LINE:
+                if term:
+                    content += term + const.WHITE_SPACE
+                    term = ''
+            else:
+                term += char
+
+        return content or term
+
+
+
+
+
+    def read_element(self) -> Element:
+
+        result: object = ''
+        content: str = ''
+
+        element = Element()
+
+        while True:
+
+            char = self.read.get_next_char()
+
+
+            if char == const.OPEN_TAG:
+                result = self.read_element_name_and_attributes()
                 continue
 
-        if char == const.WHITE_SPACE or char == const.END_LINE:
-            if term:
-                content += term + const.WHITE_SPACE
-                term = ''
-        else:
-            term += char
-
-    return content or term
-
-
-
-
-
-def read_element(read: ReadHtml) -> Element:
-
-    result: object = ''
-    content: str = ''
-
-    element = Element()
-
-    while True:
-
-        char = read.get_next_char()
-        
-        match char:
-
-            case const.OPEN_TAG:
-                result = read_element_name_and_attributes(read)
-                continue
-
-            case const.CLOSE_TAG:
-                content = read_content(read, element)
+            if char == const.CLOSE_TAG:
+                if(self.is_has_closing_element(result.get('name'))):
+                    content = self.read_content(element)
                 break
 
-            case None:
+            if char == None:
                 break
 
 
-    if result.get('name'): 
+        element.set_content(content)
         element.set_name(result.get('name'))
-
-    if result.get('attributes'): 
         element.set_attributes(result.get('attributes'))
 
-    if content: 
-        element.set_content(content)
-
-    
-    return element
-            
+        return element
 
 
 
-element: Element = None
+
+
+    def parse(self) -> Element:
+
+        element: Element = self.read_element()
+
+        element.print()
+
+
+
+
+
 
 try:
     data = open('/home/mz/Matan/WebCrawler/Crawler/Parser/text.html')
 
     read = ReadHtml( data.read() )
 
-    element = read_element( read )
+    parser = Parser( read )
 
-    element.print()
+    parser.parse()
 
 except ValueError:
     print('error')
