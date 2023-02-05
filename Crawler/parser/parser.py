@@ -1,21 +1,12 @@
-import utils.Constants as const
-import utils.HtmlTagsWithoutClose as htmlTagsWithoutClose
+from parser.utils import constants as const
+from parser.utils import tags_without_close
 
-from Element   import Element
-from ReadHtml  import ReadHtml
-from Attribute import Attribute
+from parser.element import Element
+from parser.read_html import ReadHtml
+from parser.attribute import Attribute
 
 
 class Parser:
-
-
-
-
-    def __init__(self, read: ReadHtml):
-
-        self.read : ReadHtml = read
-
-
 
 
 
@@ -23,10 +14,10 @@ class Parser:
 
         char: chr = self.read.get_next_char()
 
-        read.go_to_previous_char()
+        self.read.go_to_previous_char()
 
         if char.isalnum() or char == const.IGNORE:
-            read.go_to_previous_char()
+            self.read.go_to_previous_char()
             return True
 
         return False
@@ -37,7 +28,7 @@ class Parser:
 
     def is_has_closing_element(self, element_name: str) -> bool:
 
-        return htmlTagsWithoutClose.is_has_close(element_name)
+        return tags_without_close.is_has_close(element_name)
 
 
 
@@ -47,10 +38,10 @@ class Parser:
 
         char: chr = self.read.get_next_char()
 
-        read.go_to_previous_char()
+        self.read.go_to_previous_char()
 
         if char == const.FORWARD_SLASH:
-            read.skip_until_match(const.CLOSE_TAG)
+            self.read.skip_until_match(const.CLOSE_TAG)
             return True
 
 
@@ -146,7 +137,7 @@ class Parser:
                 break
             
             if char == const.CLOSE_TAG:
-                read.go_to_previous_char()
+                self.read.go_to_previous_char()
                 break
 
             if char.isalnum():
@@ -224,6 +215,8 @@ class Parser:
             else:
                 term += char
 
+        content += term
+
         return content or term
 
 
@@ -265,26 +258,12 @@ class Parser:
 
 
 
-    def parse(self) -> Element:
+    def parse(self, html_data) -> Element:
 
+        self.read = ReadHtml( html_data )
         element: Element = self.read_element()
 
-        element.print()
+        return element
 
 
-
-
-
-
-try:
-    data = open('/home/mz/Matan/WebCrawler/Crawler/Parser/text.html')
-
-    read = ReadHtml( data.read() )
-
-    parser = Parser( read )
-
-    parser.parse()
-
-except ValueError:
-    print('error')
 

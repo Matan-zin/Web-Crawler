@@ -1,4 +1,4 @@
-from Attribute import Attribute
+from parser.attribute import Attribute
 
 class Element:
 
@@ -53,12 +53,26 @@ class Element:
 
 
     
-    def get_attributes(self) -> list[Attribute]:
+    def find__attribute(self, name: str) -> Attribute:
+        
+        for attr in self.__attributes:
+            if attr.get_name == name:
+                return attr
 
-        return self.__attributes
+        return None
 
 
+    def find_elements(self, name):
+        result = []
+        elements = []
 
+        if(self.__name == name):
+            elements.append(self)
+
+        for elem in self.__elements:
+            result += elem.find_elements(name)
+
+        return elements + result
 
 
 

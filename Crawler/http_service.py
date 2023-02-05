@@ -30,10 +30,3 @@ class HttpService:
         
         return res.read().decode('utf-8')
 
-
-
-
-http_service = HttpService('127.0.0.1', 8888)
-
-http_service.get('http://strongerw2ise74v3duebgsvug4mehyhlpa7f6kfwnas7zofs3kov7yd.onion')
-
