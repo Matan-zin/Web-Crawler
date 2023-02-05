@@ -5,4 +5,4 @@ currently under developmnet
 
 ### Design
 
-![WebCrawlerStructure](./WebCrawlerStructure.png)
+![design](./design.png)
