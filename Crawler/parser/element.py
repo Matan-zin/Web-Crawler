@@ -56,10 +56,9 @@ class Element:
     def find__attribute(self, name: str) -> Attribute:
         
         for attr in self.__attributes:
-            if attr.get_name == name:
+            if attr.get_name() == name:
                 return attr
 
-        return None
 
 
     def find_elements(self, name):

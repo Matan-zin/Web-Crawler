@@ -14,6 +14,7 @@ class HtmlExtractor:
         for elem in elements:
           if(elem.get_content() == 'Show paste'):
             attr: Attribute = elem.find__attribute('href')
-            urls.append(attr.get_values()[0])
+            if(attr != None):
+              urls.append(attr.get_values()[0])
 
         return urls
