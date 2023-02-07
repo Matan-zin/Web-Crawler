@@ -37,13 +37,13 @@ class Element:
 
     def add_element(self, element) -> None:
 
-        self.__elements.append( element )
+        self.__elements.append(element)
 
 
     
     def add_attribute(self, attr: Attribute) -> None:
 
-        self.__attributes.append( attr )
+        self.__attributes.append(attr)
 
 
 
@@ -75,15 +75,18 @@ class Element:
 
 
 
-    def print(self):
-        print('Element: ' + self.__name)
-        print('Attributes:')
+    def __str__(self):
+        to_string : str = ''
+        to_string += ('Element: ' + self.__name + '\n')
+        to_string += ('Attributes:\n')
         for attr in self.__attributes:
-            print(attr)
-        print('content:')
-        print(self.__content)
-        print('Elements:')
-        print('{')
+            to_string += str(attr)
+        to_string += ('content:\n')
+        to_string += (self.__content + '\n')
+        to_string += ('Elements:\n')
+        to_string += ('{\n')
         for elem in self.__elements:
-            elem.print()
-        print('}')
+            to_string += (str(elem))
+        to_string += ('}\n')
+
+        return to_string
