@@ -143,7 +143,7 @@ class Parser:
             if char.isalnum():
                 self.read.go_to_previous_char()
                 attribute = self.read_attribute()
-                attributes.append( attribute )
+                attributes.append(attribute)
 
 
         return attributes
@@ -210,10 +210,11 @@ class Parser:
 
             if char == const.WHITE_SPACE or char == const.END_LINE:
                 if term:
-                    content += term + const.WHITE_SPACE
+                    content += term + const.WHITE_SPACE 
                     term = ''
             else:
-                term += char
+                if char != const.TAB:
+                    term += char
 
         content += term
 

@@ -61,7 +61,7 @@ class Element:
 
 
 
-    def find_elements(self, name):
+    def find_elements(self, name: str):
         result = []
         elements = []
 
@@ -72,6 +72,22 @@ class Element:
             result += elem.find_elements(name)
 
         return elements + result
+
+
+
+    def find_element_with_attribute_value(self, elem_name: str, attr_name: str, value: str):
+        elements = []
+
+        if self.__name == elem_name:
+            attr: Attribute = self.find__attribute(attr_name)
+            if attr != None:
+                if value in attr.get_values():
+                    elements.append(self)
+
+        for elem in self.__elements or []:
+            elements += elem.find_element_with_attribute_value(elem_name, attr_name, value)
+
+        return elements
 
 
 

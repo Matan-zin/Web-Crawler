@@ -57,9 +57,19 @@ def get_all_recent_pastes(urls: list[str]) -> list[Element]:
     return elements
 
 
-def Crawler() -> None:
 
-    http : HttpService = HttpService()
+
+
+def crawl() -> None:
+
+    urls: list[str] = get_all_recent_pastes_urls()
+
+    for url in urls:
+        print(url)
+
+    elements: list[Element] = get_all_recent_pastes(urls)
 
     return
 
+
+crawl()

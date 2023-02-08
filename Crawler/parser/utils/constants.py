@@ -1,3 +1,4 @@
+TAB = '\t'
 IGNORE = '!'
 END_LINE = '\n'
 OPEN_TAG = '<' 
