@@ -53,7 +53,7 @@ class Element:
 
 
     
-    def find__attribute(self, name: str) -> Attribute:
+    def find_attribute(self, name: str) -> Attribute:
         
         for attr in self.__attributes:
             if attr.get_name() == name:
@@ -79,7 +79,7 @@ class Element:
         elements = []
 
         if self.__name == elem_name:
-            attr: Attribute = self.find__attribute(attr_name)
+            attr: Attribute = self.find_attribute(attr_name)
             if attr != None:
                 if value in attr.get_values():
                     elements.append(self)

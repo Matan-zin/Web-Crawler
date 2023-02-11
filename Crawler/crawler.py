@@ -1,8 +1,11 @@
 import os
+
+from model.paste import Paste
 from parser.parser import Parser
+from crawler_dal import CrawlerDal
 from parser.element import Element
-from http_service import HttpService
-from html_extractor import HtmlExtractor
+from utils.http_service import HttpService
+from utils.html_extractor import HtmlExtractor
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -14,10 +17,21 @@ def _parse_html_page(html_page: str) -> Element:
 
 
 
-def _get_html_page_data(url: str) -> Element:
+
+
+def http_get(url) -> str:
 
     http : HttpService = HttpService('127.0.0.1', 8888)
-    html_page : str = http.get(url)
+
+    return http.get(url)
+
+
+
+
+
+def _get_html_page_data(url: str) -> Element:
+
+    html_page : str = http_get(url)
     html_data: Element = _parse_html_page(html_page)
     
     return html_data
@@ -35,24 +49,14 @@ def get_all_recent_pastes_urls() -> list[str]:
 
 
 
-def parse_html_page(html_page: str) -> Element:
 
-    parser : Parser = Parser()
-    return parser.parse( html_page )
+def get_all_recent_pastes_pages(urls: list[str]) -> list[Element]:
 
-
-
-
-def get_all_recent_pastes(urls: list[str]) -> list[Element]:
-
-    results: list[str] = []
     elements: list[Element] = []
 
     with ThreadPoolExecutor(os.cpu_count()) as executer1:
-        results = executer1.map(_get_html_page_data, urls)
+        elements = executer1.map(_get_html_page_data, urls)
 
-    with ThreadPoolExecutor(os.cpu_count()) as executer2:
-        elements = executer2.map(_parse_html_page, results)
 
     return elements
 
@@ -60,16 +64,56 @@ def get_all_recent_pastes(urls: list[str]) -> list[Element]:
 
 
 
+def get_paste_raw_content(url: str) -> str:
+    content : str = ''
+    raw : str = http_get(url)
+
+    for word in raw.split():
+        content += (word + ' ')
+    
+    return content
+
+
+
+
+def get_paste(element: Element) -> Paste:
+
+    paste : Paste = Paste()
+    extractor : HtmlExtractor = HtmlExtractor()
+
+    title : str = extractor.get_paste_title(element)
+    author_and_date: list[str] = extractor.get_paste_author_and_date(element)
+    raw_url : str = extractor.get_paste_raw_content_url(element)
+    content: str = get_paste_raw_content(raw_url)
+
+    paste.set_title(title)
+    paste.set_author(author_and_date[0])
+    paste.set_date(author_and_date[1])
+    paste.set_content(content)
+
+    return paste
+
+
+
+
+
 def crawl() -> None:
+    
+    pastes: list[Paste] = []
+    crawler_dal : CrawlerDal = CrawlerDal()
 
     urls: list[str] = get_all_recent_pastes_urls()
+    elements: list[Element] = get_all_recent_pastes_pages(urls)
 
-    for url in urls:
-        print(url)
+    with ThreadPoolExecutor(os.cpu_count()) as executer:
+        pastes = executer.map(get_paste, elements)
 
-    elements: list[Element] = get_all_recent_pastes(urls)
 
-    return
+    for paste in pastes:
+        crawler_dal.save_paste(paste)
+
+
+
 
 
 crawl()

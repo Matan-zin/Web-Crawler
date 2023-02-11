@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+
+
+   proxy:
+    build: ../Proxy/
+    container_name: proxy
+    networks:
+      - localnet
+    restart: unless-stopped
+
+
+
+    proxy:
+      build: ../Proxy/
+      container_name: proxy
+      networks:
+        - localnet
+      restart: unless-stopped
