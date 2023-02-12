@@ -4,13 +4,17 @@ A self study project on how to implement a web crawler using a proxy
 
 ---
 
-## Prerequistes
+
+## Prerequisites
+
 
 * Docker https://docs.docker.com/desktop/
 
 * Docker Comopse https://docs.docker.com/compose/install/
 
+
 ---
+
 
 ## How To Run
 
