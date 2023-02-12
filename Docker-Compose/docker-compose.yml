@@ -2,8 +2,7 @@ version: '3'
 
 services:
 
-
-   proxy:
+  proxy:
     build: ../Proxy/
     container_name: proxy
     networks:
@@ -11,10 +10,14 @@ services:
     restart: unless-stopped
 
 
+  crawler:
+    build: ../Crawler/
+    container_name: crawler
+    networks:
+      - localnet
+    restart: unless-stopped
 
-    proxy:
-      build: ../Proxy/
-      container_name: proxy
-      networks:
-        - localnet
-      restart: unless-stopped
+
+networks:
+  localnet:
+    driver: bridge

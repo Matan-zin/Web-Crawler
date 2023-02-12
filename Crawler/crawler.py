@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import os
 
 from model.paste import Paste
@@ -21,7 +22,7 @@ def _parse_html_page(html_page: str) -> Element:
 
 def http_get(url) -> str:
 
-    http : HttpService = HttpService('127.0.0.1', 8888)
+    http : HttpService = HttpService('proxy', 9050)
 
     return http.get(url)
 
@@ -108,12 +109,12 @@ def crawl() -> None:
     with ThreadPoolExecutor(os.cpu_count()) as executer:
         pastes = executer.map(get_paste, elements)
 
-
     for paste in pastes:
         crawler_dal.save_paste(paste)
 
 
 
-
-
+########
+# Start
+########
 crawl()

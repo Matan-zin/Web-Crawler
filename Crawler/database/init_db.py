@@ -1,7 +1,7 @@
 import sqlite3
 
 
-con = sqlite3.connect('webcrawler.db')
+con = sqlite3.connect('/Crawler/database/webcrawler.db')
 
 cur = con.cursor()
 
@@ -14,11 +14,8 @@ CREATE TABLE IF NOT EXISTS tbl_pastes
     author VARCHAR,
     date TIMESTAMP,
     content VARCHAR
-);
+)
 ''')
 
 
 con.commit()
-
-for row in cur.execute("select * from tbl_pastes"):
-    print(row)

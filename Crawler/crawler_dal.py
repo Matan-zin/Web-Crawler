@@ -2,7 +2,7 @@ import sqlite3
 
 from model.paste import Paste
 
-DB_PATH = './database/webcrawler.db'
+DB_PATH = '/Crawler/database/webcrawler.db'
 
 class CrawlerDal:
 

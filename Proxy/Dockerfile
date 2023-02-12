@@ -13,6 +13,4 @@ USER tor
 
 ENTRYPOINT ["tor"]
 
-EXPOSE 8888
-
 CMD ["-f", "/etc/tor/torrc"]
