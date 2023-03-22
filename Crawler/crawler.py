@@ -40,9 +40,9 @@ def _get_html_page_data(url: str) -> Element:
 
 
 
-def get_all_recent_pastes_urls() -> list[str]:
+def get_all_recent_pastes_urls(url) -> list[str]:
     
-    html: Element = _get_html_page_data('http://strongerw2ise74v3duebgsvug4mehyhlpa7f6kfwnas7zofs3kov7yd.onion/all')
+    html: Element = _get_html_page_data(url)
 
     extractor: HtmlExtractor = HtmlExtractor()
     return extractor.get_all_recent_pastes_urls(html)
@@ -98,12 +98,12 @@ def get_paste(element: Element) -> Paste:
 
 
 
-def crawl() -> None:
+def crawl(url) -> None:
     
     pastes: list[Paste] = []
     crawler_dal : CrawlerDal = CrawlerDal()
 
-    urls: list[str] = get_all_recent_pastes_urls()
+    urls: list[str] = get_all_recent_pastes_urls(url)
     elements: list[Element] = get_all_recent_pastes_pages(urls)
 
     with ThreadPoolExecutor(os.cpu_count()) as executer:
